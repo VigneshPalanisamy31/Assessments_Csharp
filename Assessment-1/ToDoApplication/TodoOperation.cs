@@ -28,10 +28,60 @@ namespace ToDoApplication
 
         }
         /// <summary>
+        /// Function to display 2 upcoming tasks
+        /// </summary>
+        public void Dashboard()
+        {
+            Console.WriteLine("===========================DASHBOARD=========================");
+            List<TodoItem> dashboard = TodoList.Take(2).ToList();
+            ViewTasks(dashboard);
+        }
+
+        public void Calendar()
+        {
+            bool exitCalendar = false;
+            while (!exitCalendar)
+            {
+                //Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("==============Calendar==============");
+                Console.WriteLine("\n1.Week\n2.Month\n3.Year\n4.CustomDate\n5.Exit");
+                Console.ResetColor();
+                int calendarchoice = Validator.GetValidInt("choice");
+                List<TodoItem> calendar = null;
+                switch (calendarchoice)
+                {
+                    case 1: calendar = TodoList.Where(t => t.targetDate <= DateOnly.FromDateTime(DateTime.Now.AddDays(7))).ToList(); break;
+                    case 2: calendar = TodoList.Where(t => t.targetDate <= DateOnly.FromDateTime(DateTime.Now.AddMonths(1))).ToList(); break;
+                    case 3: calendar = TodoList.Where(t => t.targetDate <= DateOnly.FromDateTime(DateTime.Now.AddYears(1))).ToList(); break;
+                    case 4: DateOnly date = Validator.GetValidDate();
+                        calendar = TodoList.Where(t => t.targetDate <= date).ToList();
+                        break;
+                    case 5: Console.WriteLine("Exiting....");
+                        exitCalendar = true;
+                        break;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\nPlease Enter a valid choice");
+                        Console.ResetColor();
+                        Thread.Sleep(500);
+                        break;
+                }
+                if (calendar != null)
+                { Console.WriteLine(calendar.Count);
+                ViewTasks(calendar); }
+                
+            }
+        }
+        /// <summary>
         /// Function to view all to-do tasks of a user.
         /// </summary>
 
         public void ViewTasks()
+        {
+            ViewTasks(TodoList);
+        }
+        public void ViewTasks(List<TodoItem>TodoList)
         {
             string green = "\u001b[32m";
             string yellow = "\u001b[33m";
@@ -70,10 +120,10 @@ namespace ToDoApplication
             string desc = Console.ReadLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\nRecurrence Choices");
-            Console.WriteLine("\n1.Date\n2.Month\n3.Year");
+            Console.WriteLine("\n1.Date\n2.Month\n3.Year\n4.No recurrence");
             Console.ResetColor();
             int _choice = Validator.GetValidInt("choice");
-            while (!(_choice > 0&&_choice<4))
+            while (!(_choice > 0&&_choice<5))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Invalid choice");
@@ -82,10 +132,6 @@ namespace ToDoApplication
 
             }
             int recurrance = Validator.GetValidRecurrance();
-            if (recurrance== 0)
-            {
-                TodoList.Add(new TodoItem(date, taskHeading, desc, recurrance, "Yet to start"));
-            }
             switch (_choice)
             {
                 case 1:
@@ -107,6 +153,9 @@ namespace ToDoApplication
                         TodoList.Add(new TodoItem(date.AddYears(i), taskHeading, desc,  recurrance - i-1, "Yet to start"));
                     }
                     break;
+                case 4:
+                    TodoList.Add(new TodoItem(date, taskHeading, desc, recurrance, "Yet to start"));
+                    break;
                 default:
                     break;
                     
@@ -126,6 +175,8 @@ namespace ToDoApplication
         public void EditTask()
         {
             ViewTasks();
+            if (TodoList.Count == 0)
+                return;
             Console.WriteLine("\nNote the id of the task you wish to edit..");
             int id = Validator.GetValidInt("id");
             if (id < 1 || id > TodoList.Count)
@@ -212,6 +263,8 @@ namespace ToDoApplication
         public void UpdateStatus()
         {
             ViewTasks();
+            if (TodoList.Count == 0)
+                return;
             Console.WriteLine("\nNote the id of the task you wish to update status..");
             int id = Validator.GetValidInt("id");
             if (id < 1 || id > TodoList.Count)
@@ -250,6 +303,8 @@ namespace ToDoApplication
         public void DeleteTask()
         {
             ViewTasks();
+            if (TodoList.Count == 0)
+                return;
             Console.WriteLine("\nNote the id of the task you wish to delete ..");
             int id = Validator.GetValidInt("id");
             if (id < 1 || id > TodoList.Count)

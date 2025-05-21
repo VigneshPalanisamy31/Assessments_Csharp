@@ -64,6 +64,7 @@ namespace ToDoApplication
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"\nWelcome {username}");
                 Console.ResetColor();
+                Thread.Sleep(1000);
             }
 
         }

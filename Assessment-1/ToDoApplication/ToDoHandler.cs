@@ -18,6 +18,8 @@ namespace ToDoApplication
                         bool exit = false;
                         while (!exit)
                         {
+                            Console.Clear();
+                            todoOperations.Dashboard();
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.WriteLine("\n-------------Tracker Options--------------");
                             Console.WriteLine("\n1.Add Task");
@@ -25,7 +27,8 @@ namespace ToDoApplication
                             Console.WriteLine("3.Update Status");
                             Console.WriteLine("4.Delete Task");
                             Console.WriteLine("5.View To-Do List");
-                            Console.WriteLine("6.Exit");
+                            Console.WriteLine("6.Calendar");
+                            Console.WriteLine("7.Exit");
                             Console.ResetColor();
                             int userchoice = Validator.GetValidInt("choice");
                             switch (userchoice)
@@ -47,6 +50,9 @@ namespace ToDoApplication
                                     todoOperations.ViewTasks();
                                     break;
                                 case 6:
+                                    todoOperations.Calendar();
+                                    break;
+                                case 7:
                                     Console.WriteLine("\nExiting....");
                                     exit = true;
                                     break;

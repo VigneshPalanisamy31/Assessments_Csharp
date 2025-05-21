@@ -152,7 +152,7 @@ namespace ToDoApplication
         public static string GetValidPassword()
         {
             Console.WriteLine("Enter the password:");
-            string password=Console.ReadLine();
+            string password=ReadPassword();
             while (!Regex.IsMatch(password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"))
             {
                 Console.ForegroundColor= ConsoleColor.Red;
@@ -166,6 +166,29 @@ namespace ToDoApplication
             }
             return password;
         }
+        public static string ReadPassword()
+        {
+            string password = string.Empty;
+            ConsoleKey key;
 
+            do
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
+
+                if (key == ConsoleKey.Backspace && password.Length > 0)
+                {
+                    Console.Write("\b \b");
+                    password = password[0..^1];
+                }
+                else if (!char.IsControl(keyInfo.KeyChar))
+                {
+                    Console.Write("*");
+                    password += keyInfo.KeyChar;
+                }
+            } while (key != ConsoleKey.Enter);
+
+            return password;
+        }
     }
 }
